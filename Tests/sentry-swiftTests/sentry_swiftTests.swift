@@ -1,5 +1,5 @@
 import XCTest
-@testable import sentry_swift
+@testable import SentrySwift
 
 
 final class sentry_swiftTests: XCTestCase {
