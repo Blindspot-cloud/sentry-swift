@@ -1,5 +1,5 @@
 //
-//  SentryLoggerIntegation.swift
+//  SentryLoggerIntegration.swift
 //
 //
 //  Created by Max Müller on 03.02.2024.
@@ -9,7 +9,7 @@ import Foundation
 import Logging
 
 
-public struct SentryLoggerIntegation: LogHandler {
+public struct SentryLoggerIntegration: LogHandler {
     private let label: String
     public var metadata: Logging.Logger.Metadata = Logger.Metadata()
     
