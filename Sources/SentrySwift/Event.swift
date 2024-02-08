@@ -188,6 +188,32 @@ public enum SpanStatus: String, Encodable {
 public enum OperationType: String, Encodable {
     case mark
     case function
+    case websocket_server = "websocket.server"
+    case rpc
+    case grpc
+    case graphql_execute = "graphql.execute"
+    case graphql_parse = "graphql.parse"
+    case graphql_resolve = "graphql.resolve"
+    case graphql_request = "graphql.request"
+    case graphql_query = "graphql.query"
+    case graphql_mutation = "graphql.mutation"
+    case graphql_subscription = "graphql.subscription"
+    case graohql_validate = "graphql.validate"
+    case subprocess_wait = "subprocess.wait"
+    case subprocess_communicate = "subprocess.communicate"
+    case middleware_handle = "middleware.handle"
+    case view_render = "view.render"
+    case template_init = "template.init"
+    case template_parse = "template.parse"
+    case file = "file"
+    case app_bootstrap = "app.bootstrap"
+    case db_query = "db.query"
+    case db_redis = "db.redis"
+    case cache_get_item = "cache.get_item"
+    case cache_delete_item = "cache.delete_item"
+    case topic_send = "topic.send"
+    case topic_receive = "topic.receive"
+    case queue_task = "queue.task"
     case http_server = "http.server"
     case http_client = "http.client"
 }
