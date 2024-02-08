@@ -5,7 +5,7 @@ import XCTest
 final class sentry_swiftTests: XCTestCase {
     func testExample() async throws {
         let dsn = try Dsn(
-        fromString: "https://19f890c7ea3b49048ddcba4aafd79cd3@sentry.bspot.lab.prz/9"
+            fromString: "https://19f890c7ea3b29048ddcba4aafd79cd1@localhost/2"
         )
         let sentryGuard = try Sentry.initialize(dsn: dsn, options: .init(debug: true))
         
