@@ -60,7 +60,7 @@ public struct Dsn {
      * - parameters:
      *   - value: The string to parse
      */
-    init(fromString value: String) throws {
+    public init(fromString value: String) throws {
         guard let parsedDsn = URL(string: value) else {
             throw SentryError.InvalidArgumentException("The \"\(value)\" DSN is invalid.")
         }
