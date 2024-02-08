@@ -126,10 +126,27 @@ public struct Span: Encodable {
     let spans: [Span]?
     let description: String?
     let status: SpanStatus?
+    
+    public init(span_id: String, trace_id: String, parent_span_id: String?, op: OperationType, timestamp: Double, start_timestamp: Double?, data: [String : Value]?, spans: [Span]?, description: String?, status: SpanStatus?) {
+        self.span_id = span_id
+        self.trace_id = trace_id
+        self.parent_span_id = parent_span_id
+        self.op = op
+        self.timestamp = timestamp
+        self.start_timestamp = start_timestamp
+        self.data = data
+        self.spans = spans
+        self.description = description
+        self.status = status
+    }
 }
 
 public struct TransactionInfo: Encodable {
     let source: TransactionInfoSource
+    
+    public init(source: TransactionInfoSource) {
+        self.source = source
+    }
 }
 
 public enum TransactionInfoSource: String, Encodable {
@@ -163,6 +180,15 @@ public struct TraceContext: Encodable {
     let status: SpanStatus?
     let description: String?
     let parent_span_id: String?
+    
+    public init(op: OperationType?, span_id: String?, trace_id: String?, status: SpanStatus?, description: String?, parent_span_id: String?) {
+        self.op = op
+        self.span_id = span_id
+        self.trace_id = trace_id
+        self.status = status
+        self.description = description
+        self.parent_span_id = parent_span_id
+    }
 }
 
 public enum SpanStatus: String, Encodable {
@@ -233,6 +259,12 @@ public struct SDK: Encodable {
     let integrations: [String]?
     let name: String?
     let version: String?
+    
+    public init(integrations: [String]?, name: String?, version: String?) {
+        self.integrations = integrations
+        self.name = name
+        self.version = version
+    }
 }
 
 public enum ApiTarget: String, Encodable {
@@ -322,6 +354,10 @@ public enum Message: Encodable {
 
 public struct Exceptions: Encodable {
     let values: [ExceptionDataBag]
+    
+    public init(values: [ExceptionDataBag]) {
+        self.values = values
+    }
 }
 
 public struct ExceptionDataBag: Encodable {
@@ -335,11 +371,21 @@ public struct ExceptionDataBag: Encodable {
 
     /// Stack trace containing frames of this exception.
     let stacktrace: Stacktrace?
+    
+    public init(type: String?, value: String?, stacktrace: Stacktrace?) {
+        self.type = type
+        self.value = value
+        self.stacktrace = stacktrace
+    }
 }
 
 public struct Stacktrace: Encodable, Equatable {
     /// A non-empty list of stack frames. The list is ordered from caller to callee, or oldest to youngest. The last frame is the one creating the exception.
     let frames: [Frame]
+    
+    public init(frames: [Frame]) {
+        self.frames = frames
+    }
 }
 
 public struct Frame: Encodable, Equatable {
@@ -364,10 +410,24 @@ public struct Frame: Encodable, Equatable {
 
     /// An optional instruction address for symbolication. This should be a string with a hexadecimal number that includes a `0x` prefix. If this is set and a known image is defined in the Debug Meta Interface, then symbolication can take place.
     let instruction_addr: String?
+    
+    public init(filename: String?, function: String?, raw_function: String?, lineno: Int?, colno: Int?, abs_path: String?, instruction_addr: String?) {
+        self.filename = filename
+        self.function = function
+        self.raw_function = raw_function
+        self.lineno = lineno
+        self.colno = colno
+        self.abs_path = abs_path
+        self.instruction_addr = instruction_addr
+    }
 }
 
 public struct Breadcrumbs: Encodable {
     var values: [Breadcrumb]
+    
+    public init(values: [Breadcrumb]) {
+        self.values = values
+    }
 }
 
 public struct Breadcrumb: Encodable {
@@ -391,4 +451,13 @@ public struct User: Encodable {
     let name: String?
     let segment: String?
     let username: String?
+    
+    public init(id: String?, ip_address: String?, email: String?, name: String?, segment: String?, username: String?) {
+        self.id = id
+        self.ip_address = ip_address
+        self.email = email
+        self.name = name
+        self.segment = segment
+        self.username = username
+    }
 }
