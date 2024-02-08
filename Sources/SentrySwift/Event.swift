@@ -246,7 +246,7 @@ public enum Level: String, Encodable {
     }
 }
 
-enum Message: Encodable {
+public enum Message: Encodable {
     enum CodingKeys: String, CodingKey {
         case message
         case params
@@ -255,7 +255,7 @@ enum Message: Encodable {
     case raw(message: String)
     case format(message: String, params: [String])
 
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         switch self {
         case .raw(let message):
             var container = encoder.singleValueContainer()
@@ -268,11 +268,11 @@ enum Message: Encodable {
     }
 }
 
-struct Exceptions: Encodable {
+public struct Exceptions: Encodable {
     let values: [ExceptionDataBag]
 }
 
-struct ExceptionDataBag: Encodable {
+public struct ExceptionDataBag: Encodable {
     /// The type of exception, e.g. `ValueError`.
     /// At least one of `type` or `value` is required, otherwise the exception is discarded.
     let type: String?
@@ -285,12 +285,12 @@ struct ExceptionDataBag: Encodable {
     let stacktrace: Stacktrace?
 }
 
-struct Stacktrace: Encodable, Equatable {
+public struct Stacktrace: Encodable, Equatable {
     /// A non-empty list of stack frames. The list is ordered from caller to callee, or oldest to youngest. The last frame is the one creating the exception.
     let frames: [Frame]
 }
 
-struct Frame: Encodable, Equatable {
+public struct Frame: Encodable, Equatable {
     /// The source file name (basename only).
     let filename: String?
 
@@ -314,7 +314,7 @@ struct Frame: Encodable, Equatable {
     let instruction_addr: String?
 }
 
-struct Breadcrumbs: Encodable {
+public struct Breadcrumbs: Encodable {
     var values: [Breadcrumb]
 }
 
