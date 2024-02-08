@@ -1,14 +1,18 @@
 
 # Sentry Swift
 
-This is a WIP implementation of Sentry SDK in swift.
+This is a WIP implementation of Sentry SDK in native swift using swift async/await concurrency.
+
+## Why
+
+Currently there are none swift native implementation of Sentry SDK (only https://github.com/swift-sentry/swift-sentry, which is far from complete and without async await support). Another reason is a need of Sentry tracing and logging for [Vapor](https://vapor.codes/) projects.
 
 ## Usage
 
 
 ```swift
 
-let dsn = try Dsn(fromString: "http://ba3bd47ce2ec3f5ee5a8bb17797a30ba@localhost:3000/13")
+let dsn = try Dsn(fromString: "SENTRY_DSN")
 
 // initialization of sentry returns a closing guard that is used to close sentry connection
 let sentryGuard = try Sentry.initialize(dsn: dsn)
@@ -21,7 +25,7 @@ let event = Event(event_id: UUID(), timestamp: Date().timeIntervalSince1970, lev
         
 Sentry.capture_event(event: event)
 
-var transaction = Sentry.start_transaction(name: "GET /foo", op: .http_server)
+let transaction = Sentry.start_transaction(name: "GET /foo", op: .http_server)
         tr.set_name_source(.route)
 
 // ...
