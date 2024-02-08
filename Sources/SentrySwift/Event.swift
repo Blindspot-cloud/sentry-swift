@@ -87,6 +87,32 @@ public struct Event: Encodable {
     let start_timestamp: Double?
     
     let transaction_info: TransactionInfo?
+    
+    public init(event_id: UUID, timestamp: Double, level: Level?, logger: String?, transaction: String?, server_name: String?, release: String?, dist: String?, tags: [String : String]?, environment: String?, modules: [String : String]?, extra: [String : Value]?, message: Message?, exception: Exceptions?, breadcrumbs: Breadcrumbs?, user: User?, request: Request?, sdk: SDK?, contexts: [String : Context]?, type: EventType?, spans: [Span]?, start_timestamp: Double?, transaction_info: TransactionInfo?) {
+        self._event_id = UUIDHexadecimalEncoded(wrappedValue: event_id)
+        self.timestamp = timestamp
+        self.level = level
+        self.logger = logger
+        self.transaction = transaction
+        self.server_name = server_name
+        self.release = release
+        self.dist = dist
+        self.tags = tags
+        self.environment = environment
+        self.modules = modules
+        self.extra = extra
+        self.message = message
+        self.exception = exception
+        self.breadcrumbs = breadcrumbs
+        self.user = user
+        self.request = request
+        self.sdk = sdk
+        self.contexts = contexts
+        self.type = type
+        self.spans = spans
+        self.start_timestamp = start_timestamp
+        self.transaction_info = transaction_info
+    }
 }
 
 public struct Span: Encodable {
