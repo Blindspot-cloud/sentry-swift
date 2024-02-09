@@ -286,7 +286,7 @@ public struct Request: Encodable {
     let headers: [String: String]?
     let _protocol: String?
     
-    init(method: String? = nil, url: String? = nil, query_string: String? = nil, body_size: UInt64? = nil, api_target: ApiTarget? = nil, cookies: String? = nil, data: Value? = nil, env: [String : Value]? = nil, fragment: String? = nil, headers: [String : String]? = nil, _protocol: String? = nil) {
+    public init(method: String? = nil, url: String? = nil, query_string: String? = nil, body_size: UInt64? = nil, api_target: ApiTarget? = nil, cookies: String? = nil, data: Value? = nil, env: [String : Value]? = nil, fragment: String? = nil, headers: [String : String]? = nil, _protocol: String? = nil) {
         self.method = method
         self.url = url
         self.query_string = query_string
@@ -314,7 +314,7 @@ public enum Level: String, Encodable {
     case info
     case debug
 
-    init(from: Logger.Level) {
+    public init(from: Logger.Level) {
         switch from {
         case .trace, .debug:
             self = .debug
@@ -436,7 +436,7 @@ public struct Breadcrumb: Encodable {
     let category: String?
     let timestamp: Double?
 
-    init(message: String? = nil, level: Level? = nil, timestamp: Double? = nil, category: String? = nil) {
+    public init(message: String? = nil, level: Level? = nil, timestamp: Double? = nil, category: String? = nil) {
         self.message = message
         self.level = level
         self.timestamp = timestamp
