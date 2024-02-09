@@ -18,6 +18,10 @@ public class Hub {
     public static func run<R>(with: Hub, operation: () throws -> R) rethrows -> R {
         return try $hub.withValue(with, operation: operation)
     }
+
+    public static func run<R>(with: Hub, operation: () async throws -> R) async rethrows -> R {
+        return try await $hub.withValue(with, operation: operation)
+    }
     
     public static func new_from_top(other: Hub) -> Hub {
         return Hub(client: other.client, scope: other.scopes.last ?? Scope())
