@@ -70,8 +70,8 @@ public class Sentry {
         Hub.hub.configure_scope(cb)
     }
     
-    public static func start_transaction(name: String, op: OperationType) -> Transaction {
-        return Hub.hub.start_transaction(name: name, op: op)
+    public static func start_transaction(name: String, op: OperationType, headers: [String: String]? = nil) -> Transaction {
+        return Hub.hub.start_transaction(name: name, op: op, headers: headers)
     }
 }
 
