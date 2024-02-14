@@ -16,6 +16,7 @@ final class sentry_swiftTests: XCTestCase {
         Sentry.configure_scope { scope in
             scope.set_span(span: tr)
         }
+        
         tr.set_request(Request(method: "GET", url: "/bar"))
         
         try await Task.sleep(nanoseconds: 1000000000)
@@ -24,11 +25,13 @@ final class sentry_swiftTests: XCTestCase {
         try await Task.sleep(nanoseconds: 1000000000)
         
     
-        var header = Sentry.configure_scope { scope in
-            scope.span?.get_header()
-        }
-        assert(header??.0 == "sentry-trace")
-        assert(header??.1 != nil)
+        let header = Sentry.configure_scope { scope in
+            assert(scope.span != nil)
+            return scope.span?.get_header()
+        }.flatMap { $0 }
+        
+        assert(header?.0 == "sentry-trace")
+        assert(header?.1 != nil)
         
         span.finish()
         

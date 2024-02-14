@@ -56,13 +56,11 @@ public class Hub {
             return nil
         }
         
-        var scope = scopes.last!
-        return cb(&scope)
+        return cb(&scopes[scopes.count - 1])
     }
     
     public func add_breadcrumb(_ bc: Breadcrumb) {
-        var scope = scopes.last!
-        scope.add_breadcrumb(bc)
+        scopes[scopes.count - 1].add_breadcrumb(bc)
     }
     
     public func capture_error(error: Error) {

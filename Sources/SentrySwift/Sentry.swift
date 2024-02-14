@@ -67,7 +67,7 @@ public class Sentry {
     }
     
     public static func configure_scope<D>(_ cb: (inout Scope) -> D) -> D? {
-        Hub.hub.configure_scope(cb)
+        return Hub.hub.configure_scope(cb)
     }
     
     public static func start_transaction(name: String, op: OperationType, headers: [String: String]? = nil) -> Transaction {
