@@ -42,15 +42,21 @@ internal class Transporter: Transport {
     
     func send_envelope(envelope: Envelope) {
         Task {
-            do {
-                let uid = try await send(envelope: envelope)
-                
-                if option.debug {
-                        print("[SWIFT-SENTRY] Transporter sentry response: \(uid)")
-                }
-            } catch where option.debug {
-                print("[SWIFT-SENTRY] Transporter error: \(error)")
-            } catch {}
+            while true {
+                do {
+                    let uid = try await send(envelope: envelope)
+                    
+                    if uid == nil {
+                        try await Task.sleep(nanoseconds: 60 * 1000000000)
+                        continue
+                    } else if option.debug && uid != nil {
+                        print("[SWIFT-SENTRY] Transporter sentry response: \(uid ?? "")")
+                    }
+                } catch where option.debug {
+                    print("[SWIFT-SENTRY] Transporter error: \(error)")
+                } catch {}
+                return
+            }
         }
     }
     
@@ -63,7 +69,7 @@ internal class Transporter: Transport {
     }
     
     @discardableResult
-    public func send(envelope: Envelope) async throws -> String {
+    public func send(envelope: Envelope) async throws -> String? {
         let data = try envelope.dump(encoder: jsonEncode)
         
         var request = HTTPClientRequest(url: self.envelopeApi)
@@ -74,6 +80,10 @@ internal class Transporter: Transport {
         request.body = .bytes(ByteBuffer(data: data))
         
         let resp = try await httpClient.execute(request, timeout: .seconds(10))
+        
+        if resp.status == .tooManyRequests {
+            return nil
+        }
     
         return try jsonDecode.decode(SentryUUIDResponse.self, from: try await resp.body.collect(upTo: Int.max)).id
     }

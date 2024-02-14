@@ -16,6 +16,7 @@ public struct Scope {
     internal var transaction: String?
     internal var contexts: [String : Context]
     internal var breadcrumbs: Breadcrumbs?
+    internal var span: SpanLike?
     
     init() {
         self.tags = [:]
@@ -30,6 +31,14 @@ public struct Scope {
     internal mutating func add_breadcrumb(_ bc: Breadcrumb) {
         var br = self.breadcrumbs ?? Breadcrumbs(values: [])
         br.values.append(bc)
+    }
+    
+    public mutating func set_span(span: SpanLike?) {
+        self.span = span
+    }
+    
+    public func get_span() -> SpanLike? {
+        return self.span
     }
     
     public mutating func set_context(key: String, ctx: Context) {

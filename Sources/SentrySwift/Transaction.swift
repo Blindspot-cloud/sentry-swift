@@ -11,6 +11,7 @@ import Foundation
 public class Transaction: SpanLike {
     let name: String
     let op: OperationType
+    var ended: Bool = false
     
     var name_source: TransactionInfoSource? = nil
     
@@ -25,8 +26,12 @@ public class Transaction: SpanLike {
     
     var spans: [Span] = []
     
-    func add_span(_ span: Span) {
+    public func add_span(_ span: Span) {
         self.spans.append(span)
+    }
+    
+    public func get_header() -> (String, String) {
+        return ("sentry-trace", into_sentry_header(trace_id: self.trace_id, span_id: self.span_id, sampled: nil))
     }
     
     init(name: String, op: OperationType, headers: [String : String]? = nil) {
@@ -49,7 +54,7 @@ public class Transaction: SpanLike {
     }
     
     public func start_child(op: OperationType, description: String, direct_child: Bool = true) -> TransactionSpan {
-        TransactionSpan(op: op, description: description, parent_span_id: direct_child ? self.span_id : nil, span_like: self)
+        TransactionSpan(op: op, description: description, parent_span_id: direct_child ? self.span_id : nil, trace_id: self.trace_id, span_like: self)
     }
     
     public func set_status(_ status: SpanStatus) {
@@ -70,7 +75,12 @@ public class Transaction: SpanLike {
     
     
     public func finish() {
+        if ended {
+            return
+        }
+        
         let end_time = Date().timeIntervalSince1970
+        self.ended = true
         
         Hub.hub.capture_event(event: Event(event_id: UUID(), timestamp: end_time, level: nil, logger: nil, transaction: name, server_name: nil, release: nil, dist: nil, tags: nil, environment: nil, modules: nil, extra: nil, message: nil, exception: nil, breadcrumbs: nil, user: nil, request: request, sdk: nil, contexts: [
             "trace": .trace(
@@ -80,16 +90,21 @@ public class Transaction: SpanLike {
     }
 }
 
-private func parse_sentry_header(header: String) -> (String, String, Bool) {
+private func parse_sentry_header(header: String) -> (String, String, Bool?) {
     let header = header.trimmingCharacters(in: .whitespaces)
     let parts = header.split(separator: "-")
     
-    return (String(parts[0]), String(parts[1]), parts[3] == "1" ? true : false)
+    return (String(parts[0]), String(parts[1]), (parts.count < 3 ? nil : parts[3] == "1" ? true : false))
+}
+
+private func into_sentry_header(trace_id: String, span_id: String, sampled: Bool?) -> String {
+    return "\(trace_id)-\(span_id)\(sampled == nil ? "" : sampled == true ? "-1" : "-0")"
 }
 
 
-protocol SpanLike {
+public protocol SpanLike {
     mutating func add_span(_ span: Span)
+    func get_header() -> (String, String)
 }
 
 public struct TransactionSpan: SpanLike {
@@ -97,6 +112,7 @@ public struct TransactionSpan: SpanLike {
     internal let description: String
     internal let start_time: Double
     internal let parent_span_id: String?
+    internal let trace_id: String
     internal let span_id: String
     // TODO: Tags
     
@@ -107,7 +123,7 @@ public struct TransactionSpan: SpanLike {
     var status: SpanStatus? = nil
     var request: Request? = nil
     
-    init(op: OperationType, description: String, parent_span_id: String?, span_like: SpanLike) {
+    init(op: OperationType, description: String, parent_span_id: String?, trace_id: String, span_like: SpanLike) {
         self.op = op
         self.description = description
         self.parent_span_id = parent_span_id
@@ -117,14 +133,19 @@ public struct TransactionSpan: SpanLike {
         self.request = nil
         self.span_id = newSpanId()
         self.start_time = Date().timeIntervalSince1970
+        self.trace_id = trace_id
     }
     
-    mutating func add_span(_ span: Span) {
+    public mutating func add_span(_ span: Span) {
         spans.append(span)
     }
     
+    public func get_header() -> (String, String) {
+        return ("sentry-trace", into_sentry_header(trace_id: self.trace_id, span_id: self.span_id, sampled: nil))
+    }
+    
     public func start_child(op: OperationType, description: String, direct_child: Bool = true) -> TransactionSpan {
-        TransactionSpan(op: op, description: description, parent_span_id: direct_child ? self.span_id : nil, span_like: self)
+        TransactionSpan(op: op, description: description, parent_span_id: direct_child ? self.span_id : nil, trace_id: self.trace_id, span_like: self)
     }
     
     public mutating func set_status(_ status: SpanStatus) {
