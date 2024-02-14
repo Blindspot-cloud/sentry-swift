@@ -40,4 +40,17 @@ try await sentryGuard.close()
 
 ```
                                                                 
-                                                                
+## Sentry options
+
+`SentryOptions` that can be passed into `Sentry.initialize` takes many arguments to customize behaviour of the SDK or to add meta data to tracked events like release name.
+
+| option             | value                                      | description                                              |
+|--------------------|--------------------------------------------|----------------------------------------------------------|
+| release            | String?                                    | Release name                                             |
+| environment        | String (default production)                | Environment name                                         |
+| server_name        | String?                                    | Server name                                              |
+| debug              | Bool (default false)                       | Enable debug (prints debug information)                  |
+| disabled           | Bool (default false)                       | Disables sentry SDK                                      |
+| sample_rate        | Float (1.0 >= sample_rate >= 0.0)          | Tells sentry SDK how many events should be sampled       |
+| traces_sample_rate | Float (1.0 >= traces_sample_rate >= 0.0)   | Tells sentry SDK how it should sample transaction events |
+| transport_factory  | TransportFactory (default AsyncHTTPClient) | Factory that creates a new transporter                   |
