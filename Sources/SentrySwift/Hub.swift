@@ -51,20 +51,18 @@ public class Hub {
         return Transaction(name: name, op: op, headers: headers)
     }
     
-    public func configure_scope(_ cb: (inout Scope) -> Void) {
+    public func configure_scope<D>(_ cb: (inout Scope) -> D) -> D? {
         guard Sentry.instance.options.disabled == false else {
-            return
+            return nil
         }
         
-        var last = scopes.removeLast()
-        cb(&last)
-        scopes.append(last)
+        var scope = scopes.last!
+        return cb(&scope)
     }
     
     public func add_breadcrumb(_ bc: Breadcrumb) {
-        var scope = self.scopes.removeLast();
+        var scope = scopes.last!
         scope.add_breadcrumb(bc)
-        self.scopes.append(scope)
     }
     
     public func capture_error(error: Error) {

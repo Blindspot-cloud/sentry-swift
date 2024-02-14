@@ -23,13 +23,12 @@ final class sentry_swiftTests: XCTestCase {
         var span = tr.start_child(op: .http_client, description: "client request")
         try await Task.sleep(nanoseconds: 1000000000)
         
-        var header: (String, String)?
-        Sentry.configure_scope { scope in
-            header = scope.span?.get_header()
-            
+    
+        var header = Sentry.configure_scope { scope in
+            scope.span?.get_header()
         }
-        assert(header?.0 == "sentry-trace")
-        assert(header?.1 != nil)
+        assert(header??.0 == "sentry-trace")
+        assert(header??.1 != nil)
         
         span.finish()
         

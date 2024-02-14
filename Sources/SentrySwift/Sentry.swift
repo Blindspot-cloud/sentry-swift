@@ -66,7 +66,7 @@ public class Sentry {
         Hub.hub.capture_error(error: error)
     }
     
-    public static func configure_scope(_ cb: (inout Scope) -> Void) {
+    public static func configure_scope<D>(_ cb: (inout Scope) -> D) -> D? {
         Hub.hub.configure_scope(cb)
     }
     
