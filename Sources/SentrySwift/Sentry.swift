@@ -40,16 +40,18 @@ public class Sentry {
     }
 
     public static func initialize(
-        dsn: Dsn,
+        dsn: Dsn?,
         eventLoopGroup: EventLoopGroup = MultiThreadedEventLoopGroup.singleton,
         options: SentryOptions? = nil
     ) throws -> SentryGuard {
         let def = try SentryOptions(disabled: false)
         let options_merged = options ?? def
         
-        let transport = options_merged.transport_factory.createTransport(dsn: dsn, eventLoop: eventLoopGroup, options: options_merged)
+        let dsn_inner = dsn ?? Dsn.localhost
         
-        instance = Sentry(dsn: dsn, options: options_merged, transport: transport)
+        let transport = options_merged.transport_factory.createTransport(dsn: dsn_inner, eventLoop: eventLoopGroup, options: options_merged)
+        
+        instance = Sentry(dsn: dsn_inner, options: options_merged, transport: transport)
         
         // Initialize main hub client
         Hub.current().bind_client(client: Client(options: options_merged))
