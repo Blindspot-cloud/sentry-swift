@@ -65,7 +65,7 @@ internal class Transporter: Transport {
     }
     
     func flush() async throws {
-        try await Task.sleep(nanoseconds: UInt64(5 * Double(NSEC_PER_SEC)))
+        try await Task.sleep(nanoseconds: UInt64(5 * Double(1_000_000_000)))
     }
     
     @discardableResult
@@ -77,7 +77,7 @@ internal class Transporter: Transport {
         request.headers.add(name: "Content-Type", value: "application/x-sentry-envelope")
         request.headers.replaceOrAdd(name: "User-Agent", value: Sentry.version)
         request.headers.replaceOrAdd(name: "X-Sentry-Auth", value: self.authHeader)
-        request.body = .bytes(ByteBuffer(data: data))
+        request.body = .bytes(ByteBuffer(bytes: data))
         
         let resp = try await httpClient.execute(request, timeout: .seconds(10))
         
@@ -85,7 +85,7 @@ internal class Transporter: Transport {
             return nil
         }
     
-        return try jsonDecode.decode(SentryUUIDResponse.self, from: try await resp.body.collect(upTo: Int.max)).id
+        return try jsonDecode.decode(SentryUUIDResponse.self, from: Data(buffer: try await resp.body.collect(upTo: Int.max))).id
     }
 }
 
