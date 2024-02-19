@@ -87,7 +87,9 @@ internal class Transporter: Transport {
         }
         
         let bytes = try await resp.body.collect(upTo: Int.max)
-        return try bytes.getJSONDecodable(SentryUUIDResponse.self, decoder: self.jsonDecode, at: 0, length: bytes.readableBytes)?.id
+        let resData = bytes.getData(at: bytes.readerIndex, length: bytes.readableBytes) ?? Data()
+        
+        return try jsonDecode.decode(SentryUUIDResponse.self, from: resData).id
     }
 }
 
