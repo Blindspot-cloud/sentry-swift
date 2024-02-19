@@ -7,7 +7,7 @@
 
 import Foundation
 import AsyncHTTPClient
-import NIOHTTP1
+import NIOFoundationCompat
 import NIOCore
 
 public protocol TransportFactory {
@@ -87,9 +87,7 @@ internal class Transporter: Transport {
         }
         
         let bytes = try await resp.body.collect(upTo: Int.max)
-        let resData = bytes.getData(at: bytes.readerIndex, length: bytes.readableBytes) ?? Data()
-        
-        return try jsonDecode.decode(SentryUUIDResponse.self, from: resData).id
+        return try bytes.getJSONDecodable(SentryUUIDResponse.self, decoder: jsonDecode, at: 0, length: bytes.readableBytes)?.id
     }
 }
 
