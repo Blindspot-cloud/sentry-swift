@@ -39,8 +39,7 @@ public class Transaction: SpanLike {
         self.op = op
         self.span_id = newSpanId()
         
-        if let headers = headers, let header = headers.first(where: { $0.key == "sentry-trace" }) {
-            let (trace_id, parent_span_id, parent_sampled) = parse_sentry_header(header: header.value)
+        if let headers = headers, let header = headers.first(where: { $0.key == "sentry-trace" }), let (trace_id, parent_span_id, parent_sampled) = parse_sentry_header(header: header.value) {
             self.trace_id = trace_id
             self.parent_span_id = parent_span_id
             self.parent_sampled = parent_sampled
@@ -90,11 +89,15 @@ public class Transaction: SpanLike {
     }
 }
 
-private func parse_sentry_header(header: String) -> (String, String, Bool?) {
+private func parse_sentry_header(header: String) -> (String, String, Bool?)? {
     let header = header.trimmingCharacters(in: .whitespaces)
     let parts = header.split(separator: "-")
     
-    return (String(parts[0]), String(parts[1]), (parts.count < 3 ? nil : parts[3] == "1" ? true : false))
+    guard parts.count >= 2 else {
+        return nil
+    }
+    
+    return (String(parts[0]), String(parts[1]), (parts.count < 3 ? nil : parts[2] == "1"))
 }
 
 private func into_sentry_header(trace_id: String, span_id: String, sampled: Bool?) -> String {
