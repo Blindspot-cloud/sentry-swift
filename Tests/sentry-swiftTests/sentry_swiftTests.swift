@@ -2,6 +2,10 @@ import XCTest
 @testable import SentrySwift
 
 
+enum MyError: Error {
+    case runtimeError(String)
+}
+
 final class sentry_swiftTests: XCTestCase {
     func testExample() async throws {
         let dsn = try Dsn(
@@ -10,6 +14,10 @@ final class sentry_swiftTests: XCTestCase {
         let sentryGuard = try Sentry.initialize(dsn: dsn, options: .init(debug: true))
         
         assert(Hub.current().client != nil)
+        
+
+        Sentry.capture_error(error: MyError.runtimeError("abc"))
+        return
         
         
         let tr = Sentry.start_transaction(name: "GET /bar", op: .http_server)

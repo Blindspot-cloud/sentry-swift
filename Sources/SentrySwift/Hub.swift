@@ -73,6 +73,11 @@ public class Hub {
                 type: error.localizedDescription, value: nil, stacktrace: nil)
             let exs = Exceptions(values: [ex])
             
+            print("SYMBOLS")
+            Thread.simpleCallStackSymbols.forEach {
+                print($0)
+            }
+            
             client.capture_event(event: Event(event_id: UUID(), timestamp: Date().timeIntervalSince1970, level: .error, logger: nil, transaction: nil, server_name: nil, release: nil, dist: nil, tags: nil, environment: nil, modules: nil, extra: nil, message: nil, exception: exs, breadcrumbs: nil, user: nil, request: nil, sdk: nil, contexts: nil, type: nil, spans: nil, start_timestamp: nil, transaction_info: nil), scope: scopes.last)
         }
     }

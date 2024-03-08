@@ -66,7 +66,7 @@ internal class Transporter: Transport {
     }
     
     func flush() async throws {
-        try await Task.sleep(nanoseconds: UInt64(5 * Double(1_000_000_000)))
+        try await Task.sleep(nanoseconds: UInt64(2 * Double(1_000_000_000)))
     }
     
     @discardableResult
