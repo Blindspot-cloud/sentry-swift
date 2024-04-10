@@ -13,16 +13,6 @@ import Foundation
  */
 internal class CallStackParser {
 
-    internal static var bundleName: String? {
-        if let name: String = Bundle.main.infoDictionary?[kCFBundleNameKey as String] as? String {
-            return name
-        } else if let name: String = Bundle(for: self).infoDictionary?[kCFBundleNameKey as String] as? String {
-            return name
-        } else {
-            return nil
-        }
-    }
-
     private static func cleanMethod(method: (String)) -> String {
         var result = method
         if (result.count > 1) {
