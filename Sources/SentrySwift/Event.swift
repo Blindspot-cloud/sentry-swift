@@ -390,7 +390,7 @@ public struct Stacktrace: Encodable, Equatable {
 
 public struct Frame: Encodable, Equatable {
     /// The source file name (basename only).
-    let filename: String?
+    var filename: String?
 
     /// Name of the frame's function. This might include the name of a class.
     /// This function name may be shortened or demangled. If not, Sentry will demangle and shorten it for some platforms. The original function name will be stored in `raw_function`.
@@ -400,10 +400,10 @@ public struct Frame: Encodable, Equatable {
     let raw_function: String?
 
     /// Line number within the source file, starting at 1.
-    let lineno: Int?
+    var lineno: Int?
 
     /// Column number within the source file, starting at 1.
-    let colno: Int?
+    var colno: Int?
 
     /// Absolute path to the source file.
     let abs_path: String?

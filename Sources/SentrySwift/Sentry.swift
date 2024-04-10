@@ -64,8 +64,12 @@ public class Sentry {
         Hub.hub.capture_event(event: event)
     }
     
-    public static func capture_error(error: Error) {
-        Hub.hub.capture_error(error: error)
+    public static func capture_error(error: Error, line: Int = #line, column: Int = #column, file: String = #file) {
+        Hub.hub.capture_error(error: error, line: line, column: column, file: file, callStackDrop: 2)
+    }
+    
+    public static func capture_message(msg: String, level: Level = Level.info, line: Int = #line, column: Int = #column, file: String = #file) {
+        Hub.hub.capture_messge(msg: msg, level: level, line: line, column: column, file: file)
     }
     
     public static func configure_scope<D>(_ cb: (inout Scope) -> D) -> D? {

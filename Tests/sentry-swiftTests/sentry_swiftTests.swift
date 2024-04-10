@@ -6,6 +6,22 @@ enum MyError: Error {
     case runtimeError(String)
 }
 
+class Bar {
+    static func x() -> Int {
+        Sentry.capture_error(error: MyError.runtimeError("abc"))
+        
+        return 1
+    }
+    
+    func y() -> Int {
+        return Bar.x()
+    }
+}
+
+func foo() -> String? {
+    return String(Bar().y())
+}
+
 final class sentry_swiftTests: XCTestCase {
     func testExample() async throws {
         let dsn = try Dsn(
@@ -16,8 +32,7 @@ final class sentry_swiftTests: XCTestCase {
         assert(Hub.current().client != nil)
         
 
-        Sentry.capture_error(error: MyError.runtimeError("abc"))
-        return
+        foo() // test callstack
         
         
         let tr = Sentry.start_transaction(name: "GET /bar", op: .http_server)
